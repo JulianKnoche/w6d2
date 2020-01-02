@@ -1,8 +1,23 @@
+# == Schema Information
+#
+# Table name: artwork_shares
+#
+#  id         :bigint           not null, primary key
+#  artwork_id :integer          not null
+#  viewer_id  :integer          not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class ArtworkShare < ApplicationRecord
-   validates :artist_id, :artwork_id, presence: true
-  # validates :title, uniqueness: { scope: :artist_id, message: "should be unqie for all artist's work"}
+  validates :viewer_id, :artwork_id, presence: true
+  validates :artwork_id, uniqueness: { scope: :viewer_id, message: "has already been shared with user" }
 
 
-  has_many :artworks, foreign_key: :artist_id
+  belongs_to :artwork
+ 
+  belongs_to :viewer, 
+    foreign_key: :viewer_id,
+    class_name: :User
 
 end 

@@ -1,13 +1,15 @@
 class UsersController < ApplicationController
   def index
     # render plain: "I'm in the index action!"
-    render json: User.all
+    if params[:username]
+      render json: User.where("username ILIKE \'#{params[:username]}%\'")
+    else
+      render json: User.all
+    end
   end
 
   def create
-    # debugger
-    user = User.new(user_params)#params.require(:user).permit(:name, :email)) #why doesnt error show without permits, we get forbiddenAttr..
-    #user.admin = ~
+    user = User.new(user_params)
     if user.save
       render json: user
     else 
@@ -16,12 +18,12 @@ class UsersController < ApplicationController
   end
 
   def show
-    # user = User.find(params[:id])
+    user = User.find(params[:id])
     render json: user
   end
 
   def update
-    # user = User.find(params[:id])
+    user = User.find(params[:id])
     # debugger
     # user_params = params.require(:user).permit(:name, :email)
     if 
@@ -33,19 +35,25 @@ class UsersController < ApplicationController
   end
 
   def destroy
+
+    user = User.find(params[:id])
+
     user.destroy
 
     render json: user
   end
 
+  # protected
+
+  # def user
+  #   User.find(params[:id])
+  # end
+
   private
 
   def user_params
-    params.require(:user).permit(:name, :email)
+    params.require(:user).permit(:username)
   end
-
-  def user
-    User.find(params[:id])
-  end
+  
 
 end
